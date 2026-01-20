@@ -1,6 +1,17 @@
-import { clerkMiddleware } from "@clerk/nextjs/server";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-export default clerkMiddleware();
+const isPulicRoute = createRouteMatcher([
+  "/",
+  "/sign-in(.*)",
+  "/sign-up(.*)",
+  "/api(.*)",
+]);
+
+export default clerkMiddleware((auth, req) => {
+  if (!isPulicRoute(req)) {
+    auth.protect();
+  }
+});
 
 export const config = {
   matcher: [
